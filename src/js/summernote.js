@@ -70,6 +70,8 @@ define([
         } else {
           this.layoutInfo.editable.html(html);
         }
+
+        this.triggerEvent('change', html);
       }
     };
 
@@ -222,12 +224,16 @@ define([
       });
 
       var $note = this.first();
-      if (isExternalAPICalled && $note.length) {
+      if ($note.length) {
         var context = $note.data('summernote');
-        return context.invoke.apply(context, list.from(arguments));
-      } else {
-        return this;
+        if (isExternalAPICalled) {
+          return context.invoke.apply(context, list.from(arguments));
+        } else if (options.focus) {
+          context.invoke('editor.focus');
+        }
       }
+
+      return this;
     }
   });
 });
